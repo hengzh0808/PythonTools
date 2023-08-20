@@ -82,7 +82,6 @@ class ComicSpider:
 
     def _spider_image_links(self, driver, href):
         driver.get(href)
-        page_source = driver.page_source
 
         name = driver.find_element(By.XPATH, "//div[@class='gb-inside-container']/h1").text
         name = name if name != None else "默认值"
@@ -93,12 +92,13 @@ class ComicSpider:
         image_links = []
         for element in elements:
             src = element.get_attribute("data-src")
+            data_src = element.get_attribute("data-src")
             if src == None:
                 src = element.get_attribute('src')
             if src == None:
                 html = element.get_attribute("outerHTML")
                 print(f"爬取href: {href}, name: {name}，获取src失败 outerHTML: {html}")
-                image_links.append('')
+                raise ValueError("Division by zero is not allowed")
             else:
                 image_links.append(src)
 
@@ -110,15 +110,14 @@ class ComicSpider:
             response = requests.get(url, stream=True)
             image_path = os.path.join(folder, f"{idx}.jpg")
 
-            if response.status_code == 200:
+            if response.status_code == 200 and len(response.content) != 0:
                 with open(image_path, "wb") as f:
                     for chunk in response.iter_content(1024):
                         f.write(chunk)
             else:
                 with self.log_lock:
                     print(f"图片下载不成功 url: {url}")
-                    image_404_path = "spider_module/一人之下/img_404.jpeg"
-                    image_path = os.path.join(folder, f"{idx}_{url}.jpg")
+                    image_404_path = "spider_module/404.jpg"
                     shutil.copy(image_404_path, image_path)
 
             return image_path
@@ -135,7 +134,6 @@ class ComicSpider:
 
             for future in image_path_futures:
                 image_paths.append(future.result())
-
 
         return image_paths
 
