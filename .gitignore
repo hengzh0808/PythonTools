@@ -1,0 +1,17 @@
+# 忽略所有编译生成的文件
+__pycache__/
+*.pyc
+*.pyo
+.idea/
+
+# 忽略虚拟环境
+venv/
+env/
+.venv/
+
+# 忽略本地配置文件
+settings.ini
+secrets.txt
+
+# 爬虫目录
+spider_module/一人之下
