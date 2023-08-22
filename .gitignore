@@ -3,6 +3,7 @@ __pycache__/
 *.pyc
 *.pyo
 .idea/
+.vscode/
 
 # 忽略虚拟环境
 venv/
